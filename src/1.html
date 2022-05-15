@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const compare = (a, b) => {
+        // const sortType = "latest";
+        const sortType = "oldest";
+        if (sortType === "latest") {
+            console.log('최신순')
+            return parseInt(b.date) - parseInt(a.date); // 최신순
+        } else {
+            console.log('과거순')
+            return parseInt(a.date) - parseInt(b.date); // 과거순
+        }
+    };
+    const arr = [
+        {id: 5, emotion: 5, content: '오늘의일기 5번', date: 5},
+        {id: 4, emotion: 4, content: '오늘의일기 4번', date: 4},
+        {id: 3, emotion: 3, content: '오늘의일기 3번', date: 3},
+        {id: 2, emotion: 2, content: '오늘의일기 2번', date: 2},
+        {id: 1, emotion: 1, content: '오늘의일기 1번', date: 1},
+        {id: 0, emotion: 3, content: 'rrrr', date: 6, }
+    ];
+
+    const filter = arr.sort(compare).sort(compare);
+    console.log(filter)
+
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import New from "./pages/New";
 import Edit from "./pages/Edit";
 import Diary from "./pages/Diary";
-import React, { useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 
 //? Reducer 함수 작성
 const reducer = (state, action) => {
@@ -30,6 +30,7 @@ const reducer = (state, action) => {
     default:
       return state;
   }
+  localStorage.setItem("diary", JSON.stringify(newState));
   return newState;
 };
 
@@ -41,8 +42,21 @@ export const DiaryDispatchContext = React.createContext();
 // React 는 SPA
 function App() {
   const [data, dispatch] = useReducer(reducer, []);
-
   const dataId = useRef(0);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("diary");
+    if (localData) {
+      const diaryList = JSON.parse(localData).sort(
+        (a, b) => parseInt(b.id) - parseInt(a.id)
+      );
+
+      if (diaryList.length >= 1) {
+        dataId.current = parseInt(diaryList[0].id) + 1;
+        dispatch({ type: "INIT", data: diaryList });
+      }
+    }
+  }, []);
 
   // * CREATE
   const onCreate = (date, content, emotion) => {
@@ -50,9 +64,9 @@ function App() {
       type: "CREATE",
       data: {
         id: dataId.current,
-        date: new Date(date).getTime(),
-        content,
         emotion,
+        content,
+        date: new Date(date).getTime(),
       },
     });
     dataId.current += 1;
@@ -85,10 +99,14 @@ function App() {
             {/* 바뀔부분 Routes */}
             <Routes>
               {/* Mapping Route */}
+              {/*? element: 컴포넌트 */}
               <Route path="/" element={<Home />} />
+              {/*? element: 컴포넌트 */}
               <Route path="/new" element={<New />} />
-              <Route path="/edit" element={<Edit />} />
-              <Route path="/diary/:id" element={<Diary />} />
+              {/*? element: 컴포넌트 */}
+              <Route path="/edit/:id" element={<Edit />} />{" "}
+              {/*? element: 컴포넌트 */}
+              <Route path="/diary/:id" element={<Diary />} />{" "}
             </Routes>
           </div>
         </BrowserRouter>
